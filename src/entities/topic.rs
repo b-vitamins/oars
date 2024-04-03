@@ -1,3 +1,4 @@
+use crate::entities::common::{Domain, Field, TopicIds, Subfield};
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -14,28 +15,4 @@ pub struct Topic {
     subfield: Subfield,
     updated_date: String,
     works_count: i32,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Domain {
-    id: i32,
-    display_name: String,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Field {
-    id: i32,
-    display_name: String,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Subfield {
-    id: i32,
-    display_name: String,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct TopicIds {
-    openalex: String,
-    wikipedia: Option<String>,
 }

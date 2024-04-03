@@ -347,3 +347,28 @@ pub struct Repository {
     host_organization_name: String,
     host_organization_lineage: Vec<String>,
 }
+
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Domain {
+    id: i32,
+    display_name: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Field {
+    id: i32,
+    display_name: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Subfield {
+    id: i32,
+    display_name: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct TopicIds {
+    openalex: String,
+    wikipedia: Option<String>,
+}

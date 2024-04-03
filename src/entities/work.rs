@@ -10,6 +10,7 @@ pub struct Work {
     apc_paid: Option<Apc>,
     best_oa_location: Option<Location>,
     biblio: Option<Biblio>,
+    cited_by_api_url: String,
     cited_by_count: usize,
     concepts: Vec<Concept>,
     corresponding_author_ids: Vec<String>,
@@ -37,6 +38,7 @@ pub struct Work {
     ngrams_url: Option<String>,
     open_access: OpenAccess,
     primary_location: Option<Location>,
+    primary_topic: Option<Topic>,
     publication_date: Option<String>,
     publication_year: Option<usize>,
     referenced_works: Option<Vec<String>>,
@@ -44,7 +46,8 @@ pub struct Work {
     sustainable_development_goals: Option<Vec<Sdg>>,
     topics: Option<Vec<Topic>>,
     title: String,
-    type_: WorkType,
+    #[serde(rename = "type")]
+    work_type: WorkType,
     type_crossref: Option<String>,
     updated_date: Option<String>,
 }

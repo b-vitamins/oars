@@ -18,8 +18,6 @@ pub struct Source {
     host_organization_name: String,
     id: String,
     ids: SourceIds,
-    image_thumbnail_url: String,
-    image_url: String,
     is_in_doaj: bool,
     is_oa: bool,
     issn: Vec<String>,
