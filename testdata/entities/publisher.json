@@ -1,0 +1,114 @@
+{
+  "alternate_titles": [
+    "エイプレス",
+    "Springer Nature Group",
+    "施普林格-自然出版集团"
+  ],
+  "cited_by_count": 220106357,
+  "country_codes": [
+    "DE"
+  ],
+  "counts_by_year": [
+    {
+      "cited_by_count": 3713193,
+      "works_count": 137188,
+      "year": 2023
+    },
+    {
+      "cited_by_count": 13004211,
+      "works_count": 591311,
+      "year": 2022
+    },
+    {
+      "cited_by_count": 12840277,
+      "works_count": 637902,
+      "year": 2021
+    },
+    {
+      "cited_by_count": 11200288,
+      "works_count": 586353,
+      "year": 2020
+    },
+    {
+      "cited_by_count": 9484225,
+      "works_count": 536692,
+      "year": 2019
+    },
+    {
+      "cited_by_count": 8360485,
+      "works_count": 531043,
+      "year": 2018
+    },
+    {
+      "cited_by_count": 7705998,
+      "works_count": 497689,
+      "year": 2017
+    },
+    {
+      "cited_by_count": 7471295,
+      "works_count": 483643,
+      "year": 2016
+    },
+    {
+      "cited_by_count": 7347462,
+      "works_count": 486511,
+      "year": 2015
+    },
+    {
+      "cited_by_count": 7029755,
+      "works_count": 595223,
+      "year": 2014
+    },
+    {
+      "cited_by_count": 6510117,
+      "works_count": 574275,
+      "year": 2013
+    },
+    {
+      "cited_by_count": 5864915,
+      "works_count": 434788,
+      "year": 2012
+    }
+  ],
+  "created_date": "2023-01-01",
+  "display_name": "Springer Nature",
+  "hierarchy_level": 0,
+  "homepage_url": "https://www.springernature.com",
+  "id": "https://openalex.org/P4310319965",
+  "ids": {
+    "openalex": "https://openalex.org/P4310319965",
+    "ror": "https://ror.org/0117jxy09",
+    "wikidata": "https://www.wikidata.org/entity/Q21096327"
+  },
+  "image_thumbnail_url": "https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Springer Nature Logo.svg&width=300",
+  "image_url": "https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Springer Nature Logo.svg",
+  "lineage": [
+    "https://openalex.org/P4310319965"
+  ],
+  "parent_publisher": null,
+  "roles": [
+    {
+      "id": "https://openalex.org/I1313014049",
+      "role": "institution",
+      "works_count": 5086
+    },
+    {
+      "id": "https://openalex.org/P4310319965",
+      "role": "publisher",
+      "works_count": 12564321
+    },
+    {
+      "id": "https://openalex.org/I4210131128",
+      "role": "institution",
+      "works_count": 34
+    }
+  ],
+  "sources_api_url": "https://api.openalex.org/sources?filter=host_organization.id:P4310319965",
+  "summary_stats": {
+    "2yr_mean_citedness": 1.7650770137294796,
+    "h_index": 1634,
+    "i10_index": 3454756
+  },
+  "updated_date": "2024-04-03T10:01:33.827557",
+  "works_count": 12564321
+}

@@ -1,0 +1,38 @@
+{
+  "cited_by_count": 163384,
+  "created_date": "2024-01-23",
+  "description": "This cluster of papers explores the intersection of artificial intelligence and medicine, focusing on applications in healthcare, medical imaging, clinical decision support, and the ethical challenges associated with AI implementation. It delves into topics such as machine learning, big data, precision medicine, and the potential impact of AI on health equity.",
+  "display_name": "Artificial Intelligence in Medicine",
+  "domain": {
+    "display_name": "Health Sciences",
+    "id": "https://openalex.org/domains/4"
+  },
+  "field": {
+    "display_name": "Medicine",
+    "id": "https://openalex.org/fields/27"
+  },
+  "id": "https://openalex.org/T11636",
+  "ids": {
+    "openalex": "https://openalex.org/T11636",
+    "wikipedia": "https://en.wikipedia.org/wiki/Artificial_intelligence_in_healthcare"
+  },
+  "keywords": [
+    "Artificial Intelligence",
+    "Machine Learning",
+    "Healthcare",
+    "Medical Imaging",
+    "Clinical Decision Support",
+    "Ethical Challenges",
+    "Big Data",
+    "Precision Medicine",
+    "Radiology",
+    "Health Equity"
+  ],
+  "siblings": [],
+  "subfield": {
+    "display_name": "Health Informatics",
+    "id": "https://openalex.org/subfields/2718"
+  },
+  "updated_date": "2024-04-02T03:54:24.707011",
+  "works_count": 23911
+}
