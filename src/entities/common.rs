@@ -3,18 +3,24 @@ use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Authorship {
-    pub author_position: Option<AuthorPosition>,
     pub author: Author,
+    pub author_position: AuthorPosition,
+    pub countries: Vec<String>,
     pub institutions: Vec<Institution>,
+    pub is_corresponding: bool,
+    pub raw_affiliation_string: String,
+    pub raw_affiliation_strings: Vec<String>,
+    pub raw_author_name: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum AuthorPosition {
+    #[serde(rename = "first")]
     First,
+    #[serde(rename = "middle")]
     Middle,
+    #[serde(rename = "last")]
     Last,
-    #[serde(other)]
-    Unknown,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -30,6 +36,8 @@ pub struct Institution {
     pub display_name: String,
     pub ror: Option<String>,
     pub country_code: Option<String>,
+    pub lineage: Vec<String>,
+    #[serde(rename = "type")]
     pub type_: Option<String>,
 }
 
@@ -41,24 +49,65 @@ pub struct Apc {
     pub value_usd: usize,
 }
 
+// Represents the best available open access location for a work
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Location {
+    pub is_accepted: bool,
     pub is_oa: bool,
-    pub landing_page_url: String,
+    pub is_published: bool,
+    pub landing_page_url: Option<String>,
+    pub license: Option<License>,
     pub pdf_url: Option<String>,
     pub source: Source,
-    pub license: Option<License>,
-    pub version: Option<String>,
+    pub version: Option<Version>,
+}
+
+// Represents the source of the OA location
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Source {
+    pub display_name: Option<String>,
+    pub host_organization: Option<String>,
+    pub host_organization_lineage: Option<Vec<String>>,
+    pub host_organization_lineage_names: Option<Vec<String>>,
+    pub host_organization_name: Option<String>,
+    pub id: Option<String>,
+    pub is_in_doaj: bool,
+    pub is_oa: bool,
+    pub issn: Option<Vec<String>>,
+    #[serde(rename = "issn_l")]
+    pub issn_l: Option<String>,
+    #[serde(rename = "type")]
+    pub type_: SourceType,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Source {
-    pub id: String,
-    pub display_name: String,
-    pub issn_l: Option<String>,
-    pub issn: Option<Vec<String>>,
-    pub host_organization: Option<String>,
-    pub type_: Option<String>,
+pub enum License {
+    #[serde(rename = "cc-by")]
+    CcBy,
+    #[serde(rename = "cc-by-sa")]
+    CcBySa,
+    #[serde(rename = "cc-by-nd")]
+    CcByNd,
+    #[serde(rename = "cc-by-nc")]
+    CcByNc,
+    #[serde(rename = "cc-by-nc-sa")]
+    CcByNcSa,
+    #[serde(rename = "cc-by-nc-nd")]
+    CcByNcNd,
+    #[serde(other)]
+    Unknown,
+}
+
+// Enum to represent version precedence
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub enum Version {
+    #[serde(rename = "submittedVersion")]
+    SubmittedVersion,
+    #[serde(rename = "acceptedVersion")]
+    AcceptedVersion,
+    #[serde(rename = "publishedVersion")]
+    PublishedVersion,
+    // Extend with other versions if necessary
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -73,6 +122,12 @@ pub struct Biblio {
 pub struct YearCount {
     pub year: usize,
     pub cited_by_count: usize,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct PercentileYear {
+    pub max: usize,
+    pub min: usize,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -110,7 +165,7 @@ pub struct MeshTag {
 pub struct WorkIds {
     pub openalex: String,
     pub doi: Option<String>,
-    pub mag: Option<usize>,
+    pub mag: Option<String>,
     pub pmid: Option<String>,
     pub pmcid: Option<String>,
 }
@@ -124,24 +179,13 @@ pub struct OpenAccess {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "lowercase")]
 pub enum OaStatus {
     Gold,
     Green,
     Hybrid,
     Bronze,
     Closed,
-    #[serde(other)]
-    Unknown,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub enum License {
-    CcBy,
-    CcBySa,
-    CcByNd,
-    CcByNc,
-    CcByNcSa,
-    CcByNcNd,
     #[serde(other)]
     Unknown,
 }
@@ -155,19 +199,23 @@ pub struct Sdg {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Topic {
-    pub id: String,
-    pub display_name: String,
-    pub score: f64,
+    pub display_name: Option<String>,
+    pub domain: Option<Domain>,
+    pub field: Option<Field>,
+    pub id: Option<String>,
+    pub score: Option<f64>,
+    pub subfield: Option<Subfield>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "lowercase")]
 pub enum WorkType {
     Article,
     Preprint,
     Book,
     Chapter,
     #[serde(other)]
-    Unknown,
+    Unknown, // To capture any unknown types gracefully
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -215,7 +263,6 @@ pub struct FunderIds {
     pub wikidata: String,
 }
 
-
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Affiliation {
     pub institution: DehydratedInstitution,
@@ -225,9 +272,13 @@ pub struct Affiliation {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct AuthorIds {
     pub openalex: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub orcid: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub scopus: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub twitter: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub wikipedia: Option<String>,
 }
 
@@ -237,7 +288,8 @@ pub struct DehydratedInstitution {
     pub ror: Option<String>,
     pub display_name: String,
     pub country_code: Option<String>,
-    pub type_: Option<String>,
+    #[serde(rename = "type")]
+    pub institution_type: Option<String>,
     pub lineage: Option<Vec<String>>,
 }
 
@@ -258,11 +310,15 @@ pub struct ApcPrice {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SourceIds {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub fatcat: Option<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub issn: Vec<String>,
     pub issn_l: String,
-    pub mag: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mag: Option<String>,
     pub openalex: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub wikidata: Option<String>,
 }
 
@@ -274,13 +330,20 @@ pub struct Society {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum SourceType {
+    #[serde(rename = "journal")]
     Journal,
+    #[serde(rename = "repository")]
     Repository,
+    #[serde(rename = "publisher")]
+    Publisher,
+    #[serde(rename = "conference")]
     Conference,
+    #[serde(rename = "ebook-platform")]
     EbookPlatform,
+    #[serde(rename = "book-series")]
     BookSeries,
     #[serde(other)]
-    Unknown, // For handling any unknown or new types that might appear in the future
+    Unknown,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -306,7 +369,6 @@ pub struct ConceptSummaryStats {
     pub i10_index: i32,
 }
 
-
 #[derive(Serialize, Deserialize, Debug)]
 pub struct DehydratedInstitutionWithRelationship {
     id: String,
@@ -322,7 +384,7 @@ pub struct DehydratedInstitutionWithRelationship {
 pub struct Geo {
     city: String,
     geonames_city_id: String,
-    region: String,
+    region: Option<String>,
     country_code: String,
     country: String,
     latitude: f64,
@@ -332,7 +394,7 @@ pub struct Geo {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct InstitutionIds {
     grid: Option<String>,
-    mag: Option<i64>,
+    mag: Option<String>,
     openalex: String,
     ror: String,
     wikipedia: Option<String>,
@@ -348,23 +410,22 @@ pub struct Repository {
     host_organization_lineage: Vec<String>,
 }
 
-
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Domain {
-    id: i32,
+    id: String,
     display_name: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Field {
-    id: i32,
-    display_name: String,
+    id: Option<String>,
+    display_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Subfield {
-    id: i32,
-    display_name: String,
+    id: Option<String>,
+    display_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
