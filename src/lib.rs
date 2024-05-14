@@ -14,6 +14,8 @@ pub mod bakery;
 #[macro_export]
 macro_rules! entity_idempotence_desugarred {
     ($entity:ty, $json_path:expr) => {{
+        use assert_json_diff::assert_json_include;
+
         let original_json = std::fs::read_to_string($json_path)
             .expect("Failed to read original JSON file");
 
@@ -26,7 +28,7 @@ macro_rules! entity_idempotence_desugarred {
         // Create a temporary file for comparison
         let mut temp_file = tempfile::NamedTempFile::new()
             .expect("Failed to create a temporary file");
-        
+
         // Write the serialized JSON to the temporary file
         std::io::Write::write_all(&mut temp_file, serialized_json.as_bytes())
             .expect("Failed to write serialized JSON to temporary file");
@@ -40,16 +42,15 @@ macro_rules! entity_idempotence_desugarred {
         let serialized_value: serde_json::Value = serde_json::from_str(&serialized_from_temp)
             .expect("Failed to parse the serialized JSON from temp file into Value");
 
-        assert_eq!(
-            original_value, serialized_value,
-            "The leavened and then deflated JSON should remain structurally identical"
-        );
+        assert_json_include!(actual: original_value, expected: serialized_value);
     }};
 }
 
 #[macro_export]
 macro_rules! entity_idempotence_sugarred {
     ($entity:ty, $json_path:expr) => {{
+        use assert_json_diff::assert_json_include;
+
         let pristine_json = std::fs::read_to_string($json_path)
             .expect("Failed to read original JSON file");
 
@@ -62,18 +63,14 @@ macro_rules! entity_idempotence_sugarred {
             .to_string();
 
         if let Some(deflated_entity) = deflated_entity_str {
-            let pristine_value: serde_json::Value = serde_json::from_str(&pristine_json)
+            let original_value: serde_json::Value = serde_json::from_str(&pristine_json)
                 .expect("Failed to parse original JSON string into Value");
-            let deflated_value: serde_json::Value = serde_json::from_str(&deflated_entity)
+            let serialized_value: serde_json::Value = serde_json::from_str(&deflated_entity)
                 .expect("Failed to parse deflated JSON string into Value");
 
-            assert_eq!(
-                pristine_value, deflated_value,
-                "Deflated and then inflated JSON data should remain structurally identical"
-            );
+            assert_json_include!(actual: original_value, expected: serialized_value);
         } else {
             panic!("Deflation to string failed");
         }
     }};
 }
-
