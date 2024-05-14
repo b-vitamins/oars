@@ -6,39 +6,43 @@ use crate::entities::common::{
 use serde::{Deserialize, Serialize};
 use serde_json::{self, Error as SerdeError};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Institution {
-    associated_institutions: Vec<DehydratedInstitutionWithRelationship>,
-    cited_by_count: i64,
-    country_code: String,
-    counts_by_year: Vec<CountsByYear>,
-    created_date: String,
-    display_name: String,
-    display_name_acronyms: Vec<String>,
-    display_name_alternatives: Vec<String>,
-    geo: Geo,
-    homepage_url: String,
-    id: String,
-    ids: InstitutionIds,
-    image_thumbnail_url: String,
-    image_url: String,
-    international: InternationalDisplayNames,
-    lineage: Vec<String>,
-    repositories: Vec<Repository>,
-    roles: Vec<Role>,
-    ror: String,
-    summary_stats: SummaryStats,
+    associated_institutions: Option<Vec<DehydratedInstitutionWithRelationship>>,
+    cited_by_count: Option<i64>,
+    country_code: Option<String>,
+    counts_by_year: Option<Vec<CountsByYear>>,
+    created_date: Option<String>,
+    display_name: Option<String>,
+    display_name_acronyms: Option<Vec<String>>,
+    display_name_alternatives: Option<Vec<String>>,
+    geo: Option<Geo>,
+    homepage_url: Option<String>,
+    id: Option<String>,
+    ids: Option<InstitutionIds>,
+    image_thumbnail_url: Option<String>,
+    image_url: Option<String>,
+    international: Option<InternationalDisplayNames>,
+    lineage: Option<Vec<String>>,
+    repositories: Option<Vec<Repository>>,
+    roles: Option<Vec<Role>>,
+    ror: Option<String>,
+    summary_stats: Option<SummaryStats>,
     #[serde(rename = "type")]
     institution_type: Option<String>,
     #[serde(rename = "type_id")]
     institution_type_id: Option<String>,
-    updated_date: String,
-    works_api_url: String,
-    works_count: i32,
-    x_concepts: Vec<DehydratedConcept>,
+    updated_date: Option<String>,
+    works_api_url: Option<String>,
+    works_count: Option<i32>,
+    x_concepts: Option<Vec<DehydratedConcept>>,
 }
 
 impl Institution {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
     pub fn leaven<L: Leavenable>(input: L) -> Result<Self, SerdeError> {
         L::leaven(input)
     }
