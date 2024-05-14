@@ -5,38 +5,42 @@ use crate::entities::common::{
 use serde::{Deserialize, Serialize};
 use serde_json::{self, Error as SerdeError};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Source {
     abbreviated_title: Option<String>,
-    alternate_titles: Vec<String>,
-    apc_prices: Vec<ApcPrice>,
+    alternate_titles: Option<Vec<String>>,
+    apc_prices: Option<Vec<ApcPrice>>,
     apc_usd: Option<i32>,
-    cited_by_count: i64,
-    country_code: String,
-    counts_by_year: Vec<CountsByYear>,
-    created_date: String,
-    display_name: String,
-    homepage_url: String,
-    host_organization: String,
-    host_organization_lineage: Vec<String>,
-    host_organization_name: String,
-    id: String,
-    ids: SourceIds,
-    is_in_doaj: bool,
-    is_oa: bool,
-    issn: Vec<String>,
-    issn_l: String,
-    societies: Vec<Society>,
-    summary_stats: SummaryStats,
+    cited_by_count: Option<i64>,
+    country_code: Option<String>,
+    counts_by_year: Option<Vec<CountsByYear>>,
+    created_date: Option<String>,
+    display_name: Option<String>,
+    homepage_url: Option<String>,
+    host_organization: Option<String>,
+    host_organization_lineage: Option<Vec<String>>,
+    host_organization_name: Option<String>,
+    id: Option<String>,
+    ids: Option<SourceIds>,
+    is_in_doaj: Option<bool>,
+    is_oa: Option<bool>,
+    issn: Option<Vec<String>>,
+    issn_l: Option<String>,
+    societies: Option<Vec<Society>>,
+    summary_stats: Option<SummaryStats>,
     #[serde(rename = "type")]
-    source_type: SourceType,
-    updated_date: String,
-    works_api_url: String,
-    works_count: i32,
-    x_concepts: Vec<DehydratedConcept>,
+    source_type: Option<SourceType>,
+    updated_date: Option<String>,
+    works_api_url: Option<String>,
+    works_count: Option<i32>,
+    x_concepts: Option<Vec<DehydratedConcept>>,
 }
 
 impl Source {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
     pub fn leaven<L: Leavenable>(input: L) -> Result<Self, SerdeError> {
         L::leaven(input)
     }
@@ -55,16 +59,15 @@ impl Deflatable for Source {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::{entity_idempotence_sugarred, entity_idempotence_desugarred};
 
-    // Source tests
     #[test]
     fn test_source_idempotence_sugarred() {
-        crate::entity_idempotence_sugarred!(Source, "testdata/entities/source.json");
+        entity_idempotence_sugarred!(Source, "testdata/entities/source.json");
     }
 
     #[test]
     fn test_source_idempotence_desugarred() {
-        crate::entity_idempotence_desugarred!(Source, "testdata/entities/source.json");
+        entity_idempotence_desugarred!(Source, "testdata/entities/source.json");
     }
-
 }
