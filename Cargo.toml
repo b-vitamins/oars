@@ -2,14 +2,18 @@
 name = "oars"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["Ayan Das <ayand@iisc.ac.in>"]
+license = "MIT"
+readme = "README.md"
+description = "A REST client for the OpenAlex API"
+repository = "https://github.com/b-vitamins/oars"
+homepage = "https://github.com/b-vitamins/oars"
 
 [dependencies]
+reqwest = { version = "0.12.4", features = ["json", "blocking", "stream", "multipart"] }
 serde = { version = "1.0.197", features = ["derive"] }
 serde_json = "1.0"
-reqwest = "0.12.4"
-tokio = "1.37.0"
+tokio = { version = "1.37.0", features = ["full"] }
 tracing = "0.1.40"
 tracing-subscriber = "0.3.18"
 
