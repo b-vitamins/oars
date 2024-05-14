@@ -3,25 +3,29 @@ use crate::entities::common::{Domain, Field, Subfield, TopicIds};
 use serde::{Deserialize, Serialize};
 use serde_json::{self, Error as SerdeError};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Topic {
-    cited_by_count: i64,
-    created_date: String,
-    description: String,
-    display_name: String,
-    domain: Domain,
-    field: Field,
-    id: String,
-    ids: TopicIds,
-    keywords: Vec<String>,
+    cited_by_count: Option<i64>,
+    created_date: Option<String>,
+    description: Option<String>,
+    display_name: Option<String>,
+    domain: Option<Domain>,
+    field: Option<Field>,
+    id: Option<String>,
+    ids: Option<TopicIds>,
+    keywords: Option<Vec<String>>,
     #[serde(default)]
     siblings: Option<Vec<String>>,
-    subfield: Subfield,
-    updated_date: String,
-    works_count: i32,
+    subfield: Option<Subfield>,
+    updated_date: Option<String>,
+    works_count: Option<i32>,
 }
 
 impl Topic {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
     pub fn leaven<L: Leavenable>(input: L) -> Result<Self, SerdeError> {
         L::leaven(input)
     }
