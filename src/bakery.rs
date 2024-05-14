@@ -16,30 +16,27 @@ pub enum Deflated {
 }
 
 impl Deflated {
-    // Attempts to unwrap the enum as a String.
-    // Returns Some(String) if the enum is Deflated::String variant, or None otherwise.
     pub fn to_string(self) -> Option<String> {
-        match self {
-            Deflated::String(s) => Some(s),
-            _ => None,
+        if let Deflated::String(s) = self {
+            Some(s)
+        } else {
+            None
         }
     }
 
-    // Attempts to unwrap the enum as a serde_json::Value.
-    // Returns Some(Value) if the enum is Deflated::JsonValue variant, or None otherwise.
     pub fn to_json(self) -> Option<Value> {
-        match self {
-            Deflated::JsonValue(v) => Some(v),
-            _ => None,
+        if let Deflated::JsonValue(v) = self {
+            Some(v)
+        } else {
+            None
         }
     }
 
-    // Attempts to unwrap the enum as a Vec<u8>.
-    // Returns Some(Vec<u8>) if the enum is Deflated::ByteArray variant, or None otherwise.
     pub fn to_bytes(self) -> Option<Vec<u8>> {
-        match self {
-            Deflated::ByteArray(b) => Some(b),
-            _ => None,
+        if let Deflated::ByteArray(b) = self {
+            Some(b)
+        } else {
+            None
         }
     }
 }
@@ -74,22 +71,22 @@ impl Leavenable for &Value {
 
 impl Leavenable for PathBuf {
     fn leaven<L: DeserializeOwned>(self) -> Result<L, SerdeError> {
-        let mut file = File::open(self).unwrap();
+        let mut file = File::open(self).map_err(SerdeError::io)?;
         let mut contents = String::new();
-        file.read_to_string(&mut contents).unwrap();
+        file.read_to_string(&mut contents).map_err(SerdeError::io)?;
         serde_json::from_str(&contents)
     }
 }
 
 impl Leavenable for Vec<u8> {
     fn leaven<L: DeserializeOwned>(self) -> Result<L, SerdeError> {
-        serde_json::from_slice(&self).map_err(SerdeError::into)
+        serde_json::from_slice(&self)
     }
 }
 
 impl Leavenable for &[u8] {
     fn leaven<L: DeserializeOwned>(self) -> Result<L, SerdeError> {
-        serde_json::from_slice(self).map_err(SerdeError::into)
+        serde_json::from_slice(self)
     }
 }
 
