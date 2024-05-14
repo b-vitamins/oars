@@ -8,33 +8,59 @@ use serde_json::{self, Error as SerdeError};
 
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Institution {
+    #[serde(skip_serializing_if = "Option::is_none")]
     associated_institutions: Option<Vec<DehydratedInstitutionWithRelationship>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     cited_by_count: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     country_code: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     counts_by_year: Option<Vec<CountsByYear>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     created_date: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     display_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     display_name_acronyms: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     display_name_alternatives: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     geo: Option<Geo>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     homepage_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     ids: Option<InstitutionIds>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     image_thumbnail_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     image_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     international: Option<InternationalDisplayNames>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     lineage: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     repositories: Option<Vec<Repository>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     roles: Option<Vec<Role>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     ror: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     summary_stats: Option<SummaryStats>,
     #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     institution_type: Option<String>,
     #[serde(rename = "type_id")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     institution_type_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     updated_date: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     works_api_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     works_count: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     x_concepts: Option<Vec<DehydratedConcept>>,
 }
 
@@ -64,11 +90,11 @@ mod tests {
 
     #[test]
     fn test_institution_idempotence_sugarred() {
-        crate::entity_idempotence_sugarred!(Institution, "testdata/entities/institution.json");
+        crate::entity_idempotence_sugarred!(Institution, "testdata/institution.json");
     }
 
     #[test]
     fn test_institution_idempotence_desugarred() {
-        crate::entity_idempotence_desugarred!(Institution, "testdata/entities/institution.json");
+        crate::entity_idempotence_desugarred!(Institution, "testdata/institution.json");
     }
 }

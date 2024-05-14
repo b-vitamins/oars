@@ -5,24 +5,43 @@ use serde_json::{self, Error as SerdeError};
 
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Publisher {
+    #[serde(skip_serializing_if = "Option::is_none")]
     alternate_titles: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     cited_by_count: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     country_codes: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     counts_by_year: Option<Vec<CountByYear>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     created_date: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     display_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     hierarchy_level: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     homepage_url: Option<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     ids: Option<PublisherIds>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     image_thumbnail_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     image_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     lineage: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     parent_publisher: Option<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     roles: Option<Vec<Role>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     sources_api_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     summary_stats: Option<SummaryStats>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     updated_date: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     works_count: Option<i32>,
 }
 
@@ -51,11 +70,11 @@ mod tests {
     use super::*;
     #[test]
     fn test_publisher_idempotence_sugarred() {
-        crate::entity_idempotence_sugarred!(Publisher, "testdata/entities/publisher.json");
+        crate::entity_idempotence_sugarred!(Publisher, "testdata/publisher.json");
     }
 
     #[test]
     fn test_publisher_idempotence_desugarred() {
-        crate::entity_idempotence_desugarred!(Publisher, "testdata/entities/publisher.json");
+        crate::entity_idempotence_desugarred!(Publisher, "testdata/publisher.json");
     }
 }
