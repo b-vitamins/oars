@@ -10,6 +10,7 @@ pub mod entities {
 }
 
 pub mod bakery;
+pub mod config;
 
 #[macro_export]
 macro_rules! entity_idempotence_desugarred {
