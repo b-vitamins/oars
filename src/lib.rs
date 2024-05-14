@@ -53,10 +53,11 @@ macro_rules! entity_idempotence_sugarred {
         let pristine_json = std::fs::read_to_string($json_path)
             .expect("Failed to read original JSON file");
 
-        let leavened_entity: $entity = <$entity>::leaven(std::path::PathBuf::from($json_path)).unwrap();
+        let leavened_entity: $entity = <$entity>::leaven(std::path::PathBuf::from($json_path))
+            .expect("Failed to leaven the entity");
 
         let deflated_entity_str: Option<String> = leavened_entity
-            .deflate($crate::bakery::Deflation::ToString) // Changed crate:: to $crate::
+            .deflate($crate::bakery::Deflation::ToString)
             .expect("Failed to deflate entity into JSON String")
             .to_string();
 
@@ -75,3 +76,4 @@ macro_rules! entity_idempotence_sugarred {
         }
     }};
 }
+
