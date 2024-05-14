@@ -3,30 +3,34 @@ use crate::entities::common::{CountByYear, PublisherIds, Role, SummaryStats};
 use serde::{Deserialize, Serialize};
 use serde_json::{self, Error as SerdeError};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Publisher {
-    alternate_titles: Vec<String>,
-    cited_by_count: i64,
-    country_codes: Vec<String>,
-    counts_by_year: Vec<CountByYear>,
-    created_date: String,
-    display_name: String,
-    hierarchy_level: i32,
-    homepage_url: Option<String>,
-    id: String,
-    ids: PublisherIds,
-    image_thumbnail_url: String,
-    image_url: String,
-    lineage: Vec<String>,
-    parent_publisher: Option<String>,
-    roles: Vec<Role>,
-    sources_api_url: String,
-    summary_stats: SummaryStats,
-    updated_date: String,
-    works_count: i32,
+    alternate_titles: Option<Vec<String>>,
+    cited_by_count: Option<i64>,
+    country_codes: Option<Vec<String>>,
+    counts_by_year: Option<Vec<CountByYear>>,
+    created_date: Option<String>,
+    display_name: Option<String>,
+    hierarchy_level: Option<i32>,
+    homepage_url: Option<Option<String>>,
+    id: Option<String>,
+    ids: Option<PublisherIds>,
+    image_thumbnail_url: Option<String>,
+    image_url: Option<String>,
+    lineage: Option<Vec<String>>,
+    parent_publisher: Option<Option<String>>,
+    roles: Option<Vec<Role>>,
+    sources_api_url: Option<String>,
+    summary_stats: Option<SummaryStats>,
+    updated_date: Option<String>,
+    works_count: Option<i32>,
 }
 
 impl Publisher {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
     pub fn leaven<L: Leavenable>(input: L) -> Result<Self, SerdeError> {
         L::leaven(input)
     }
