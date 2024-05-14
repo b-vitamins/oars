@@ -10,7 +10,7 @@ static USERAGENT: &str = concat!(
     env!("CARGO_PKG_VERSION"),
 );
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct OARSConfig {
     pub basepath: String,
     pub useragent: String,
