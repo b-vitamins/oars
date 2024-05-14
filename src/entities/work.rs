@@ -7,41 +7,41 @@ use serde::{Deserialize, Serialize};
 use serde_json::{self, Error as SerdeError};
 use std::collections::HashMap;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Work {
     abstract_inverted_index: Option<HashMap<String, Vec<usize>>>,
-    authorships: Vec<Authorship>,
+    authorships: Option<Vec<Authorship>>,
     apc_list: Option<Apc>,
     apc_paid: Option<Apc>,
     best_oa_location: Option<Location>,
     biblio: Option<Biblio>,
-    cited_by_api_url: String,
-    cited_by_count: usize,
+    cited_by_api_url: Option<String>,
+    cited_by_count: Option<usize>,
     cited_by_percentile_year: Option<PercentileYear>,
-    concepts: Vec<Concept>,
-    corresponding_author_ids: Vec<String>,
-    corresponding_institution_ids: Vec<String>,
-    countries_distinct_count: usize,
-    counts_by_year: Vec<YearCount>,
+    concepts: Option<Vec<Concept>>,
+    corresponding_author_ids: Option<Vec<String>>,
+    corresponding_institution_ids: Option<Vec<String>>,
+    countries_distinct_count: Option<usize>,
+    counts_by_year: Option<Vec<YearCount>>,
     created_date: Option<String>,
-    display_name: String,
+    display_name: Option<String>,
     doi: Option<String>,
     fulltext_origin: Option<String>,
-    grants: Vec<Grant>,
-    has_fulltext: bool,
-    id: String,
-    ids: WorkIds,
-    indexed_in: Vec<String>,
-    institutions_distinct_count: usize,
-    is_paratext: bool,
-    is_retracted: bool,
+    grants: Option<Vec<Grant>>,
+    has_fulltext: Option<bool>,
+    id: Option<String>,
+    ids: Option<WorkIds>,
+    indexed_in: Option<Vec<String>>,
+    institutions_distinct_count: Option<usize>,
+    is_paratext: Option<bool>,
+    is_retracted: Option<bool>,
     keywords: Option<Vec<Keyword>>,
     language: Option<String>,
-    locations: Vec<Location>,
-    locations_count: usize,
+    locations: Option<Vec<Location>>,
+    locations_count: Option<usize>,
     mesh: Option<Vec<MeshTag>>,
     ngrams_url: Option<String>,
-    open_access: OpenAccess,
+    open_access: Option<OpenAccess>,
     primary_location: Option<Location>,
     primary_topic: Option<Topic>,
     publication_date: Option<String>,
@@ -50,17 +50,20 @@ pub struct Work {
     referenced_works_count: Option<usize>,
     related_works: Option<Vec<String>>,
     sustainable_development_goals: Option<Vec<Sdg>>,
-    title: String,
+    title: Option<String>,
     topics: Option<Vec<Topic>>,
     #[serde(rename = "type")]
-    work_type: WorkType,
+    work_type: Option<WorkType>,
     type_crossref: Option<String>,
     updated_date: Option<String>,
     #[serde(default)]
-    pub versions: Vec<String>,
+    pub versions: Option<Vec<String>>,
 }
 
 impl Work {
+    pub fn new() -> Work {
+				Self::default()
+		}
     pub fn leaven<L: Leavenable>(input: L) -> Result<Self, SerdeError> {
         L::leaven(input)
     }
