@@ -1,6 +1,6 @@
-use reqwest::{Client, ClientBuilder, StatusCode};
+use reqwest::{Client};
 use std::sync::{Arc, Mutex};
-use tracing::{info, warn, debug, instrument};
+use tracing::{info, warn, instrument};
 
 // Static strings and constants
 static BASEPATH: &str = "https://api.openalex.org";
@@ -117,7 +117,6 @@ mod tests {
 
     #[test]
     fn test_increment_querycount() {
-        tracing_subscriber::fmt::init();
 
         let config = OARSConfig::new().enable_logging();
         config.bump_querycount();
@@ -126,7 +125,6 @@ mod tests {
 
     #[test]
     fn test_reset_querycount() {
-        tracing_subscriber::fmt::init();
 
         let config = OARSConfig::new().enable_logging();
         config.bump_querycount();
