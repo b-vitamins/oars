@@ -1,26 +1,19 @@
-use reqwest::{Client};
-use std::sync::{Arc, Mutex};
-use tracing::{info, warn, instrument};
+use tokio::time::Duration;
 
-// Static strings and constants
 static BASEPATH: &str = "https://api.openalex.org";
-static USERAGENT: &str = concat!(
-    env!("CARGO_PKG_NAME"),
-    "/",
-    env!("CARGO_PKG_VERSION"),
-);
+static USERAGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"));
 
 #[derive(Clone, Debug)]
 pub struct OARSConfig {
     pub basepath: String,
     pub useragent: String,
-    pub client: Arc<Client>,
     pub email: Option<String>,
     pub apikey: Option<String>,
     pub maxretries: usize,
     pub politeness: f64,
-    pub querycount: Arc<Mutex<usize>>,
     pub logornot: bool,
+    pub dailylimit: usize,
+    pub resetafter: Duration,
 }
 
 impl Default for OARSConfig {
@@ -28,13 +21,13 @@ impl Default for OARSConfig {
         Self {
             basepath: BASEPATH.to_owned(),
             useragent: USERAGENT.to_owned(),
-            client: Arc::new(Client::new()),
             email: None,
             apikey: None,
             maxretries: 3,
             politeness: 0.1,
-            querycount: Arc::new(Mutex::new(0)),
             logornot: false,
+            dailylimit: 100_000,
+            resetafter: Duration::from_secs(60 * 60 * 24),
         }
     }
 }
@@ -42,6 +35,11 @@ impl Default for OARSConfig {
 impl OARSConfig {
     pub fn new() -> Self {
         Self::default()
+    }
+
+    pub fn basepath(mut self, basepath: String) -> Self {
+        self.basepath = basepath;
+        self
     }
 
     pub fn email(mut self, email: String) -> Self {
@@ -69,66 +67,49 @@ impl OARSConfig {
         self
     }
 
-    #[instrument]
-    pub fn get_querycount(&self) -> usize {
-        let count = self.querycount.lock().unwrap();
-        if self.logornot {
-            info!("Query Count: {}", *count);
-        }
-        *count
+    pub fn dailylimit(mut self, limit: usize) -> Self {
+        self.dailylimit = limit;
+        self
     }
 
-    #[instrument]
-    fn bump_querycount(&self) {
-        let mut count = self.querycount.lock().unwrap();
-        *count += 1;
-        if self.logornot {
-            info!("Query Count: {} (+1)", *count);
-        }
-    }
-
-    #[instrument]
-    pub fn reset_querycount(&self) {
-        let mut count = self.querycount.lock().unwrap();
-        *count = 0;
-        if self.logornot {
-            info!("Query Count reset to 0");
-        }
+    pub fn resetafter(mut self, interval: Duration) -> Self {
+        self.resetafter = interval;
+        self
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use tracing_subscriber;
+    use crate::init_logging;
 
     #[test]
     fn test_configuration_defaults() {
-        tracing_subscriber::fmt::init();
-
         let config = OARSConfig::new();
         assert_eq!(config.basepath, BASEPATH);
         assert_eq!(config.useragent, USERAGENT);
         assert_eq!(config.maxretries, 3);
         assert_eq!(config.politeness, 0.1);
-        assert_eq!(config.get_querycount(), 0);
+        assert_eq!(config.resetafter, Duration::from_secs(60 * 60 * 24));
         assert!(!config.logornot);
     }
 
     #[test]
-    fn test_increment_querycount() {
+    fn test_configuration_with_options() {
+        init_logging();
+        let config = OARSConfig::new()
+            .email("test@example.com".to_string())
+            .apikey("testapikey".to_string())
+            .maxretries(5)
+            .politeness(0.2)
+            .enable_logging()
+            .resetafter(Duration::from_secs(60 * 60 * 12)); // 12 hours
 
-        let config = OARSConfig::new().enable_logging();
-        config.bump_querycount();
-        assert_eq!(config.get_querycount(), 1);
-    }
-
-    #[test]
-    fn test_reset_querycount() {
-
-        let config = OARSConfig::new().enable_logging();
-        config.bump_querycount();
-        config.reset_querycount();
-        assert_eq!(config.get_querycount(), 0);
+        assert_eq!(config.email, Some("test@example.com".to_string()));
+        assert_eq!(config.apikey, Some("testapikey".to_string()));
+        assert_eq!(config.maxretries, 5);
+        assert_eq!(config.politeness, 0.2);
+        assert!(config.logornot);
+        assert_eq!(config.resetafter, Duration::from_secs(60 * 60 * 12));
     }
 }
