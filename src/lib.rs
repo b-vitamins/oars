@@ -10,13 +10,13 @@ pub mod entities {
 }
 
 pub mod bakery;
-pub mod config;
-pub mod traits;
 pub mod client;
+pub mod config;
 pub mod error;
+pub mod traits;
 
-use tracing_subscriber::fmt::Subscriber;
 use std::sync::Once;
+use tracing_subscriber::fmt::Subscriber;
 
 static INIT: Once = Once::new();
 
@@ -119,4 +119,3 @@ macro_rules! check_entity_against_json {
         assert_json_include!(actual: actual_value, expected: expected_value);
     }};
 }
-
