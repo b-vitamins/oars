@@ -11,6 +11,20 @@ pub mod entities {
 
 pub mod bakery;
 pub mod config;
+pub mod traits;
+pub mod client;
+pub mod error;
+
+use tracing_subscriber::fmt::Subscriber;
+use std::sync::Once;
+
+static INIT: Once = Once::new();
+
+pub fn init_logging() {
+    INIT.call_once(|| {
+        Subscriber::builder().init();
+    });
+}
 
 #[macro_export]
 macro_rules! entity_idempotence_desugarred {
@@ -75,3 +89,34 @@ macro_rules! entity_idempotence_sugarred {
         }
     }};
 }
+
+#[macro_export]
+macro_rules! check_entity_against_json {
+    ($entity:ty, $json_path:expr, $entity_instance:expr) => {{
+        use assert_json_diff::assert_json_include;
+
+        // Read the expected JSON file
+        let expected_json = std::fs::read_to_string($json_path)
+            .expect("Failed to read expected JSON file");
+
+        // Deserialize the expected JSON into the entity type
+        let expected_entity: $entity = serde_json::from_str(&expected_json)
+            .expect("Failed to deserialize the expected JSON");
+
+        // Serialize both the expected entity and the in-memory entity
+        let expected_serialized = serde_json::to_string(&expected_entity)
+            .expect("Failed to serialize the expected entity");
+        let actual_serialized = serde_json::to_string(&$entity_instance)
+            .expect("Failed to serialize the in-memory entity");
+
+        // Parse the serialized entities into serde_json::Value for comparison
+        let expected_value: serde_json::Value = serde_json::from_str(&expected_serialized)
+            .expect("Failed to parse the expected serialized JSON into Value");
+        let actual_value: serde_json::Value = serde_json::from_str(&actual_serialized)
+            .expect("Failed to parse the actual serialized JSON into Value");
+
+        // Compare the actual entity with the expected entity
+        assert_json_include!(actual: actual_value, expected: expected_value);
+    }};
+}
+
